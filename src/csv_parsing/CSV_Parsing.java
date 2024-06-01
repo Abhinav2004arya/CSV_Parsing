@@ -9,8 +9,10 @@ package csv_parsing;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvValidationException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 
 
 
@@ -27,31 +29,28 @@ public class CSV_Parsing {
         try {
             
 //            We will make use of OpenCsv's Reader and Writer methods to read the CSV file and write them in new CSV file
+              String inputFilePath = "e:/StockDataBANKBARODA.csv";
+              String outputFilePath = "e:/resut.csv";
             
-            CSVReader csvReader = new CSVReader(new FileReader("e:/StockDataBANKBARODA.csv"));
-            CSVWriter csvWritter = new CSVWriter(new FileWriter("e:/rut.csv"));
-            String[] lines;
            
-            
-            
-            while ((lines = csvReader.readNext())!= null)
+            try (CSVReader csvReader = new CSVReader(new FileReader(inputFilePath));
+                    CSVWriter csvWritter = new CSVWriter(new FileWriter(outputFilePath))) 
             {
-                System.out.println("Date: " + lines[1] + ", Opening Price: " + lines[2] + ", Highest Price: " + lines[3] 
+                String[] lines;
+                while ((lines = csvReader.readNext())!= null)
+                {
+                    System.out.println("Date: " + lines[1] + ", Opening Price: " + lines[2] + ", Highest Price: " + lines[3]
                             + ", Lowest Price: " + lines[4] + ", Closing Price: " + lines[5] + ", Total Volume: " + lines[6] );
-                
-                
-                String[] WantedColumns = {lines[0],lines[1],lines[2],lines[5]};
-                csvWritter.writeNext(WantedColumns);
-  
+                    
+                    
+                    String[] WantedColumns = {lines[0],lines[1],lines[2],lines[5]};
+                    csvWritter.writeNext(WantedColumns);
+                    
+                }
             }
-            csvWritter.close();
-            System.out.println("Data Entered Succesfully!!!");
-            
-            
-           
-            
+            System.out.println("Data Entered Succesfully!!!");   
         } 
-        catch (Exception e) {
+        catch (CsvValidationException | IOException e) {
             System.out.println("This Exception Occured: " + e);
         }
         
